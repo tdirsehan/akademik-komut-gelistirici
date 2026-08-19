@@ -1,0 +1,50 @@
+name: Patch core reliability rules
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/patch-core-reliability.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add mandatory reliability rules to generated prompts
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          old = "function build(d){return [['AMAÇ',d.purpose],['ROL / UZMANLIK',d.role],['GÖREV',d.task],['BAĞLAM',d.context],['KAYNAK / KANIT KURALLARI',d.evidence],['KISITLAR',d.constraints],['ÇIKTI FORMATI',d.format],['KALİTE KONTROLÜ',d.quality],['ÜSLUP',d.tone],['DİL',d.language]].filter(x=>x[1]).map(x=>x[0]+':\\n'+x[1]).join('\\n\\n')}"
+
+          new = "const CORE_RELIABILITY_RULES=`TEMEL DOĞRULUK VE GÜVENİLİRLİK KURALLARI:\\n- Halüsinasyon üretme. Bilmediğin veya emin olmadığın bilgi, kaynak, veri, DOI, isim, tarih, bulgu, istatistik ya da alıntı uydurma.\\n- Doğrulayamadığın bir bilgiyi kesin gerçek gibi sunma; açıkça ‘doğrulanamadı’, ‘belirsiz’ veya ‘bunu doğrulamak için ek kaynağa ihtiyaç var’ şeklinde belirt.\\n- Kaynak isteniyorsa yalnızca gerçekten var olduğundan emin olduğun kaynakları kullan; bibliyografik ayrıntıları tahmin ederek tamamlama.\\n- Kaynaktan gelen bilgi, çıkarım ve varsayımı birbirinden açıkça ayır. Çıkarım yapıyorsan bunun bir çıkarım olduğunu belirt.\\n- Kullanıcı tarafından verilen metin, dosya veya kaynaklar görevin temeli ise yalnızca onların desteklediği noktaları onlara atfet; kaynakların desteklemediği boşlukları genel bilgiyle sessizce doldurma.\\n- Güncel veya zaman duyarlı iddialarda mümkünse güncel ve güvenilir kaynaklarla doğrulama yap; doğrulama imkânın yoksa bu sınırlılığı açıkça belirt.\\n- Eksik bilgi varsa gerekli varsayımı açıkça yaz veya belirsizliği bildir; gizli varsayımla sonuç üretme.\\n- Son yanıtı vermeden önce olgusal tutarlılık, kaynak-idda eşleşmesi, sayı/tarih tutarlılığı ve iç çelişki açısından kontrol et.`;function build(d){const main=[['AMAÇ',d.purpose],['ROL / UZMANLIK',d.role],['GÖREV',d.task],['BAĞLAM',d.context],['KAYNAK / KANIT KURALLARI',d.evidence],['KISITLAR',d.constraints],['ÇIKTI FORMATI',d.format],['KALİTE KONTROLÜ',d.quality],['ÜSLUP',d.tone],['DİL',d.language]].filter(x=>x[1]).map(x=>x[0]+':\\n'+x[1]).join('\\n\\n');return [main,CORE_RELIABILITY_RULES].filter(Boolean).join('\\n\\n')}"
+
+          if 'CORE_RELIABILITY_RULES' not in s:
+              if old not in s:
+                  raise SystemExit('build() target not found')
+              s = s.replace(old, new, 1)
+
+          old_tip = 'Amaç hedefi, Görev işi, Bağlam koşulları, Kanıt dayanakları, Kısıtlar sınırları ve Kalite Kontrolü son denetimi tanımlar.'
+          new_tip = old_tip + ' Halüsinasyon üretmeme ve doğruluk/güvenilirlik kuralları her komuta otomatik eklenir.'
+          if old_tip in s and 'her komuta otomatik eklenir' not in s:
+              s = s.replace(old_tip, new_tip, 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Add mandatory anti-hallucination and reliability rules"
+            git push
+          fi
