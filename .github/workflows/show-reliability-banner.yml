@@ -1,0 +1,41 @@
+name: Show reliability banner
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/show-reliability-banner.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make automatic reliability rules visible
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          if '.reliabilityBanner{' not in s:
+              s=s.replace('.tip{font-size:11px;color:var(--muted);background:#f8fafc;border:1px dashed var(--line);padding:10px;border-radius:10px}', '.tip{font-size:11px;color:var(--muted);background:#f8fafc;border:1px dashed var(--line);padding:10px;border-radius:10px}.reliabilityBanner{margin-top:10px;padding:12px 14px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:12px;color:#1e3a8a;font-size:12px;line-height:1.5}.reliabilityBanner strong{display:block;font-size:13px;margin-bottom:3px}')
+          target='<button class="generate" id="generate">Komut Oluştur</button>'
+          banner='<div class="reliabilityBanner"><strong>Otomatik Güvenilirlik Kuralları</strong>Halüsinasyon üretmeme, uydurma kaynak/DOI vermeme, belirsizliği açıkça belirtme ve kaynak-idda tutarlılığı kuralları her oluşturulan komuta otomatik eklenir.</div>'+target
+          if 'Otomatik Güvenilirlik Kuralları</strong>' not in s:
+              if target not in s:
+                  raise SystemExit('Generate button target not found')
+              s=s.replace(target,banner,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit visible banner
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Make automatic reliability rules visible in UI"
+            git push
+          fi
