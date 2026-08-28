@@ -1,4 +1,4 @@
-# Academic Prompt Builder
+# Academic Prompt Generator
 
 A browser-based tool for systematically developing academic and professional AI prompts.
 
