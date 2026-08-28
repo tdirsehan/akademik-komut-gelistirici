@@ -20,3 +20,8 @@ GitHub Pages için:
 Settings → Pages → Deploy from a branch → main → / (root) → Save
 
 Komut içeriği tarayıcı tarafında işlenir. Yerel Kaydet kullanılırsa veri cihazın localStorage alanında tutulur.
+
+## Academic AI Tool Portfolio
+
+Bu proje, Prof. Dr. Taşkın Dirsehan tarafından geliştirilen Academic AI Tool Portfolio'nun bir parçasıdır:
+https://github.com/tdirsehan
