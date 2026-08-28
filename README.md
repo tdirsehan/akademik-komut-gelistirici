@@ -1,27 +1,28 @@
-# Akademik Komut Geliştirici
+# Academic Prompt Builder
 
-Akademik ve profesyonel yapay zekâ komutlarını sistematik biçimde geliştirmek için hazırlanmış tarayıcı tabanlı bir araç.
+A browser-based tool for systematically developing academic and professional AI prompts.
 
-Canlı uygulama:
+Live application:
 https://tdirsehan.github.io/akademik-komut-gelistirici/
 
-Özellikler:
-- Akademik Araştırma, Literatür Taraması, Makale Fikri Geliştirme, Hakem Değerlendirmesi ve Genel Amaçlı şablonlar
-- Amaç, Rol / Uzmanlık, Görev, Bağlam, Kaynak / Kanıt Kuralları, Kısıtlar, Çıktı Formatı ve Kalite Kontrolü alanları
-- Çoktan seçmeli üslup seçenekleri
-- Türkçe, İngilizce, Almanca ve Fransızca dil seçenekleri
-- Komut kalite puanı
-- Yerel kayıt
-- Komutu panoya kopyalama
-- ChatGPT Aç, Gemini Aç, Claude Aç ve Grok Aç
-- Yapay zekâya geçmeden önce Komut Kodu ekranı
+Features:
+- Academic Research, Literature Review, Article Idea Development, Peer Review, and General Purpose templates
+- Purpose, Role / Expertise, Task, Context, Source / Evidence Rules, Constraints, Output Format, and Quality Control fields
+- Multiple tone options
+- English, Turkish, German, and French output-language options
+- Prompt Quality Score
+- Local saving in the browser
+- Copy-to-clipboard support
+- Open in ChatGPT, Gemini, Claude, or Grok
+- Prompt Code screen before opening the selected AI tool
+- Automatic reliability and anti-hallucination safeguards
 
-GitHub Pages için:
+GitHub Pages setup:
 Settings → Pages → Deploy from a branch → main → / (root) → Save
 
-Komut içeriği tarayıcı tarafında işlenir. Yerel Kaydet kullanılırsa veri cihazın localStorage alanında tutulur.
+Prompt content is processed entirely in the browser. If Save Locally is used, the data is stored in the device's localStorage.
 
 ## Academic AI Tool Portfolio
 
-Bu proje, Prof. Dr. Taşkın Dirsehan tarafından geliştirilen Academic AI Tool Portfolio'nun bir parçasıdır:
+This project is part of the Academic AI Tool Portfolio developed by Prof. Dr. Taşkın Dirsehan:
 https://github.com/tdirsehan
